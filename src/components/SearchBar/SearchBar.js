@@ -16,10 +16,10 @@ class SearchBar extends React.Component {
     );
   }
   search(term) {
-    this.props.onSearch(term)
+    this.props.onSearch(term);
   }
   handleTermChange(event) {
-    this.state.term(event.target.value);
+    this.search(event.target.value);
   }
 }
 

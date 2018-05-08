@@ -7,10 +7,11 @@ import Playlist from '../Playlist/Playlist';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { searchResults: [{name: 'Mwah', artist: 'Dua Lipa', album: 'Err, I dont know', id: 1},
-                                  {name: 'Swalla', artist: 'Jason Derulo', album: 'Err, I dont know', id: 2}],
+    this.state = { searchResults: [{name: 'Song1', artist: 'Artist1', album: 'Album1', id: 1},
+                                   {name: 'Song2', artist: 'Artist2', album: 'Album2', id: 2}],
                    playlistName: 'My Playlist',
-                   playlistTracks: [{name: 'Mwah', artist: 'Dua Lipa', album: 'Err, I dont know', id: 1}],
+                   playlistTracks: [{name: 'Song1', artist: 'Artist1', album: 'Album1', id: 1},
+                                    {name: 'Song2', artist: 'Artist2', album: 'Album2', id: 2}],
                  };
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
@@ -41,7 +42,7 @@ class App extends Component {
       var placeholder = this.state.playlistTracks;
       placeholder.push(track);
       this.setState({
-        playlistTracks: placeholder
+        playlistTracks: this.state.playlistTracks.push(track),
       })
     }
   }
@@ -59,7 +60,8 @@ class App extends Component {
   }
 
   savePlaylist() {
-
+    var trackURIs = this.state.playlistTracks.map(track => 'spotify:track:' + track.id);
+    console.log(trackURIs);
   }
 
   search(term) {
