@@ -4,13 +4,9 @@ import Track from '../Track/Track';
 
 class TrackList extends React.Component {
   render() {
-    console.log(this.props.tracks)
     return (
       <div className="TrackList">
           {
-            // Getting error:
-            // TypeError: Object doesn't support property or method 'map'
-            // because of an unresolved Promise, maybe?
             this.props.tracks.map(track => {
               return (
                 <Track

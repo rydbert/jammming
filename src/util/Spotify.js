@@ -29,7 +29,10 @@ window.history.pushState('Access Token', null, '/');
   search(term) {
 
     // Have tried this.getAccessToken() which seems to lead to different problems
-    // this.getAccessToken();
+    // as the whole page reloads without doing anything about the search
+
+    //this.getAccessToken();
+
 
     return fetch('https://api.spotify.com/v1/search?type=track&q=' + term, {
       headers: {
@@ -37,9 +40,9 @@ window.history.pushState('Access Token', null, '/');
         }
     }).then(response => response.json()
       ).then(jsonResponse => {
-
+        console.log(jsonResponse)
         if (jsonResponse.tracks.items) {
-          // According to console.log, an array of objects with the correct
+          // According to console.log below, an array of objects with the correct
           // properties is being returned, as it should be.
           console.log(jsonResponse.tracks.items.map(track => {
             return {
@@ -51,19 +54,16 @@ window.history.pushState('Access Token', null, '/');
               }
             })
           )
-          return jsonResponse.tracks.items.map(track => {
-            return {
+          return jsonResponse.tracks.items.map(track => ({
               id: track.id,
               name: track.name,
               artist: track.artists[0].name,
               album: track.album.name,
-              uri: track.uri,
-              }
-          })
+              uri: track.uri
+          }));
         }
       })
   }
 }
-
 
 export default Spotify;
