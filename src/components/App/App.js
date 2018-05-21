@@ -28,6 +28,7 @@ class App extends Component {
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
   }
+
   addTrack(track) {
     // Use the track's id property to check if the current song is in the playlistTracks state.
     if (this.state.playlistTracks.find(savedTrack => savedTrack.id === track.id)) {
@@ -39,14 +40,35 @@ class App extends Component {
       this.setState({
         playlistTracks: placeholder
       })
-      console.log(this.state)
     }
   }
+
   removeTrack(track) {
     // Use the track's id property to filter it out of playlistTracks.
     this.setState({
       playlistTracks: this.state.playlistTracks.filter(element => element.id !== track.id),
       })
+  }
+
+  savePlaylist() {
+//    var trackURIs = this.state.playlistTracks.map(track => 'spotify:track:' + track.uri);
+    var trackURIs = this.state.playlistTracks.map(track => track.uri);
+    console.log(trackURIs);
+
+    Spotify.savePlaylist(this.state.playlistName, trackURIs);
+
+    this.setState({
+      playlistName: 'New Playlist',
+      playlistTracks: [],
+    })
+  }
+
+  search(term) {
+    console.log(term +' GETTING SEARCHED');
+
+    Spotify.search(term).then(tracks => {
+      this.setState({searchResults: tracks});
+    });
   }
 
   updatePlaylistName(name) {
@@ -55,35 +77,8 @@ class App extends Component {
     })
   }
 
-  savePlaylist() {
-    Spotify.getAccessToken();
-
-    var trackURIs = this.state.playlistTracks.map(track => 'spotify:track:' + track.uri);
-    console.log(trackURIs);
-  }
-
-  search(term) {
-    console.log(term +' GETTING SEARCHED');
-
-    /*  searchResults updates correctly with hardcoded values.
-    var searchTermPlaceholder = [{name: 'newSong1', artist: 'newArtist1', album: 'Album1', id: 1, uri: 'uri1'},
-                                   {name: 'newSong2', artist: 'newArtist2', album: 'Album2', id: 2, uri: 'uri2'},
-                                   {name: 'newSong3', artist: 'newArtist3', album: 'Album3', id: 3, uri: 'uri3'}]
-    this.setState({
-      searchResults: searchTermPlaceholder
-    });
-    */
-
-    Spotify.getAccessToken();
-
-    Spotify.search(term).then(tracks => {
-      this.setState({searchResults: tracks});
-      console.log("THE STATE OF AFFAIRS: " + this.state)
-    });
-
-  }
-
   render() {
+    Spotify.getAccessToken();
     return (
       <div>
         <h1>Ja<span className="highlight">mmm</span>ing</h1>
