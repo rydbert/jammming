@@ -8,20 +8,21 @@ import Spotify from '../../util/Spotify';
 class App extends Component {
   constructor(props) {
     super(props);
-    /*
     this.state = { searchResults: [],
                    playlistName: 'My Playlist',
                    playlistTracks: [],
                  };
+
+                 /*
+    this.state = { searchResults: [{name: 'Song1', artist: 'Artist1', album: 'Album1', id: 1, uri: 'spotify:track:7r5bS08R8d0jZuDZutVeHQ'},
+                                   {name: 'Song2', artist: 'Artist2', album: 'Album2', id: 2, uri: 'spotify:track:7AMnWNkwYPxaVDgkwmEEKj'},
+                                   {name: 'Song3', artist: 'Artist3', album: 'Album3', id: 3, uri: 'spotify:track:1yWItbINcAC0IFssISgvvg'}],
+                   playlistName: 'My Playlist',
+                   playlistTracks: [{name: 'Song1', artist: 'Artist1', album: 'Album1', id: 1, uri: 'spotify:track:7r5bS08R8d0jZuDZutVeHQ'},
+                                    {name: 'Song2', artist: 'Artist2', album: 'Album2', id: 2, uri: 'spotify:track:7AMnWNkwYPxaVDgkwmEEKj'}],
+                 };
                  */
 
-    this.state = { searchResults: [{name: 'Song1', artist: 'Artist1', album: 'Album1', id: 1, uri: 'uri1'},
-                                   {name: 'Song2', artist: 'Artist2', album: 'Album2', id: 2, uri: 'uri2'},
-                                   {name: 'Song3', artist: 'Artist3', album: 'Album3', id: 3, uri: 'uri3'}],
-                   playlistName: 'My Playlist',
-                   playlistTracks: [{name: 'Song1', artist: 'Artist1', album: 'Album1', id: 1, uri: 'uri1'},
-                                    {name: 'Song2', artist: 'Artist2', album: 'Album2', id: 2, uri: 'uri2'}],
-                 };
     this.addTrack = this.addTrack.bind(this);
     this.removeTrack = this.removeTrack.bind(this);
     this.updatePlaylistName = this.updatePlaylistName.bind(this);
@@ -51,12 +52,11 @@ class App extends Component {
   }
 
   savePlaylist() {
-//    var trackURIs = this.state.playlistTracks.map(track => 'spotify:track:' + track.uri);
     var trackURIs = this.state.playlistTracks.map(track => track.uri);
-    console.log(trackURIs);
 
     Spotify.savePlaylist(this.state.playlistName, trackURIs);
 
+    console.log(`Saving and resetting playlist`);
     this.setState({
       playlistName: 'New Playlist',
       playlistTracks: [],
@@ -64,7 +64,7 @@ class App extends Component {
   }
 
   search(term) {
-    console.log(term +' GETTING SEARCHED');
+    console.log(`Searching for "${term}"`);
 
     Spotify.search(term).then(tracks => {
       this.setState({searchResults: tracks});

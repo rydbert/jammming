@@ -1,5 +1,10 @@
 const clientID = '8465cb26123f4809ae8cb344eb6c0050';
-const redirectURI = "http://localhost:3000/";
+//const redirectURI = "http://localhost:3000/";
+//const redirectURI = "http://likeable-substance.surge.sh/";
+//const redirectURI = "http://festive-game.surge.sh/";
+const redirectURI = "http://singingwithmybaby.surge.sh/";
+
+
 var accessToken = '';
 
 const Spotify = {
@@ -14,16 +19,16 @@ const Spotify = {
     else if (token && time){
 
       accessToken = token[1];
-      console.log(accessToken);
+//      console.log(accessToken);
       var expiresIn = time[1];
-      console.log(expiresIn);
+//      console.log(expiresIn);
 
       window.setTimeout(() => accessToken = null, expiresIn * 1000);
       window.history.pushState('Access Token', null, '/');
 
     }
     else {
-      var scopes = 'playlist-modify-public';
+      var scopes = 'playlist-modify-public playlist-modify-private';
       window.location.href = ('https://accounts.spotify.com/authorize' +
         '?response_type=token' +
         '&client_id=' + clientID +
@@ -38,45 +43,66 @@ const Spotify = {
     }
 
     this.getAccessToken();
-    var headers = {'Authorization': 'Bearer ' + accessToken};
+    var headers = {'Authorization': 'Bearer ' + accessToken,
+                    'Content-Type': 'application/json'};
     var userID = '';
+    var playlistID = '';
 
     fetch('https://api.spotify.com/v1/me', {
       headers: headers,
-      }).then(response => {
+    })
+    .then(response => {
     	if (response.ok) {
     		return response.json();
     	}
     	throw new Error('Request failed!');
-      }, networkError => console.log(networkError.message)
-    ).then(jsonResponse => {
+      },
+      networkError => console.log(networkError.message)
+    )
+    .then(jsonResponse => {
       // Code to execute with jsonResponse
-      console.log("jsonResponse: " + jsonResponse);
       userID = jsonResponse.id;
-      console.log(userID);
-    });
-
-    userID = 'rydbert';
-    console.log('https://api.spotify.com/v1/users/' + userID + '/playlists')
-    // Hardcoded userID still doesn't work.
-    fetch('https://api.spotify.com/v1/users/' + userID + '/playlists', {
+//      console.log("User id: " + userID);
+    })
+    .then( () => {
+      fetch('https://api.spotify.com/v1/users/' + userID + '/playlists', {
         headers: headers,
         method: 'POST',
-        body: JSON.stringify({id: '200'})
-    }).then(response => {
+        body: JSON.stringify({name: playlistName})
+      })
+      .then(response => {
         if (response.ok) {
           return response.json();
         }
         throw new Error('Request failed!');
-      }, networkError => console.log(networkError.message)
-    ).then(jsonResponse => {
-      // Code to execute with jsonResponse
-      console.log(jsonResponse.id)
-      var playlistID = jsonResponse.id;
-      console.log('playlistID' + playlistID);
-    });
+        },
+        networkError => console.log(networkError.message)
+      )
+      .then(jsonResponse => {
+        // Code to execute with jsonResponse
+        playlistID = jsonResponse.id;
+//        console.log('Playlist id: ' + playlistID);
+      })
+      .then( () => {
+        fetch('https://api.spotify.com/v1/users/' + userID + '/playlists/' + playlistID + '/tracks', {
+          headers: headers,
+          method: 'POST',
+          body: JSON.stringify({uris: trackURIs})
+        })
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Request failed!');
+          }, networkError => console.log(networkError.message)
+        )
+        .then(jsonResponse => {
+        // Code to execute with jsonResponse
+        // console.log("jsonResponse: " + jsonResponse)
+        })
+      })
+    })
   },
-
 
   search(term) {
 
